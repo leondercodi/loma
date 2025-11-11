@@ -1,1 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kaffee-Generator ☕</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Alpine.js: kleine JS-Bibliothek für Reaktivität, kein Build nötig -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <!-- Dein Code -->
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="wrap" x-data="coffeeApp()">
+    <header class="header">
+      <h1>☕ Kaffee-Generator</h1>
+      <p class="lead">Stell deinen Kaffee zusammen & teile einen Link.</p>
+    </header>
 
+    <section class="grid">
+      <div class="card">
+        <h2>Einstellungen</h2>
+
+        <label>Basis
+          <select x-model="base">
+            <option value="espresso">Espresso</option>
+            <option value="doppio">Doppio</option>
+            <option value="filter">Filterkaffee</option>
+            <option value="coldbrew">Cold Brew</option>
+          </select>
+        </label>
+
+        <div class="row">
+          <label>Stärke <span class="muted" x-text="strength + '/10'"></span>
+            <input type="range" min="1" max="10" x-model.number="strength">
+          </label>
+
+          <label>Größe
+            <select x-model="size">
+              <option value="s">S (200 ml)</option>
+              <option value="m">M (300 ml)</option>
+              <option value="l">L (400 ml)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Milch
+            <select x-model="milkType">
+              <option value="none">keine</option>
+              <option value="vollmilch">Vollmilch</option>
+              <option value="hafer">Haferdrink</option>
+              <option value="soja">Soja</option>
+              <option value="mandel">Mandel</option>
+            </select>
+          </label>
+
+          <label>Milch-Anteil <span class="muted" x-text="milkPct + '%'"></span>
+            <input type="range" min="0" max="80" x-model.number="milkPct">
+          </label>
+        </div>
+
+        <div class="row">
+          <label>Süße <span class="muted" x-text="sweet + '/10'"></span>
+            <input type="range" min="0" max="10" x-model.number="sweet">
+          </label>
+
+          <label>Temperatur
+            <select x-model="temp">
+              <option value="hot">heiß</option>
+              <option value="iced">iced</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <p class="label">Aromen & Extras</p>
+          <div class="chips">
+            <template x-for="opt in allExtras" :key="opt">
+              <button class="chip"
+                      :data-active="extras.includes(opt)"
+                      @click="toggleExtra(opt)"
+                      x-text="opt">
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button @click="randomize()">🎲 Zufall</button>
+          <button class="secondary" @click="reset()">Zurücksetzen</button>
+          <button class="ghost" @click="share()">Link kopieren</button>
+          <span class="copy-toast" x-show="copied" x-transition>kopiert ✅</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rezept</h2>
+        <h3 class="recipe-title" x-text="recipeTitle"></h3>
+        <p class="muted" x-text="recipeText"></p>
+
+        <div class="meta">
+          <div><strong>Kosten (geschätzt):</strong> <span x-text="formatEuro(cost)"></span></div>
+          <div><strong>Menge:</strong> <span x-text="sizeML + ' ml'"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      Rein statisch, läuft auf <strong>GitHub Pages</strong>. Keine Cookies, kein Tracking.
+    </footer>
+  </main>
+</body>
+</html>
